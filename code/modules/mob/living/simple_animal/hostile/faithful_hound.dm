@@ -32,10 +32,7 @@
 	if(!stat && !client && world.time > last_check)
 		last_check = world.time + 5 SECONDS
 		var/aggressiveness = 0 //The closer somebody is to us, the more aggressive we are
-		var/list/mobs = list()
-		var/list/objs = list()
-		get_mobs_and_objs_in_view_fast(get_turf(src),5, mobs, objs, 0)
-		for(var/mob/living/m in mobs)
+		for(var/mob/living/m in view(5, src))
 			if((m == src) || (m in allowed_mobs) || m.faction == faction)
 				continue
 			var/new_aggress = 1

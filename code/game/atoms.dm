@@ -50,6 +50,9 @@
 		crash_with("Warning: [src]([type]) initialized multiple times!")
 	atom_flags |= ATOM_FLAG_INITIALIZED
 
+	if(ispath(virtual_mob))
+		virtual_mob = new virtual_mob(get_turf(src), src)
+
 	if(light_max_bright && light_outer_range)
 		update_light()
 
@@ -68,6 +71,11 @@
 /atom/Destroy()
 	global.is_currently_exploding -= src
 	QDEL_NULL(reagents)
+
+	if(!ispath(virtual_mob))
+		QDEL_NULL(virtual_mob)
+		observed_virtual_mobs?.Cut()
+
 	. = ..()
 
 /atom/proc/reveal_blood()
@@ -85,11 +93,8 @@
 	else
 		return null
 
-//return flags that should be added to the viewer's sight var.
-//Otherwise return a negative number to indicate that the view should be cancelled.
-/atom/proc/check_eye(user)
-	if (istype(user, /mob/living/silicon/ai)) // WHYYYY
-		return 0
+//Return flags would replace a mob's visual flags
+/atom/proc/replacing_visual_flags(user)
 	return -1
 
 //Return flags that may be added as part of a mobs sight
@@ -293,11 +298,6 @@ its easier to just keep the beam vertical.
 	for(var/thing in get_contained_external_atoms())
 		var/atom/movable/AM = thing
 		AM.dropInto(loc)
-		if(ismob(AM))
-			var/mob/M = AM
-			if(M.client)
-				M.client.eye = M.client.mob
-				M.client.perspective = MOB_PERSPECTIVE
 
 /atom/proc/physically_destroyed()
 	SHOULD_CALL_PARENT(TRUE)

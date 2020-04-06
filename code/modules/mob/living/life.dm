@@ -167,20 +167,6 @@
 
 	set_fullscreen(stat == UNCONSCIOUS, "blackout", /obj/screen/fullscreen/blackout)
 
-	if(machine)
-		var/viewflags = machine.check_eye(src)
-		if(viewflags < 0)
-			reset_view(null, 0)
-		else if(viewflags)
-			set_sight(viewflags)
-	else if(eyeobj)
-		if(eyeobj.owner != src)
-			reset_view(null)
-	else if(z_eye) 
-		return
-	else if(client && !client.adminobs)
-		reset_view(null)
-
 /mob/living/proc/update_sight()
 	set_sight(0)
 	set_see_in_dark(0)

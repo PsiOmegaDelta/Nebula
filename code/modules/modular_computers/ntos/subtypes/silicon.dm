@@ -33,12 +33,5 @@
 	if(os)
 		. += os.get_header_data()
 
-/mob/living/silicon/check_eye()
-	var/datum/extension/interactive/ntos/os = get_extension(src, /datum/extension/interactive/ntos)
-	if(os)
-		return os.check_eye()
-	else 
-		return ..()
-
 /datum/extension/interactive/ntos/silicon/small/get_hardware_flag()
 	return PROGRAM_TABLET

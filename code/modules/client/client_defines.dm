@@ -5,7 +5,6 @@
 	// * Admin things *
 	var/datum/admins/holder = null
 	var/datum/admins/deadmin_holder = null
-	var/adminobs = null
 	var/adminhelped = 0
 	var/staffwarn = null
 

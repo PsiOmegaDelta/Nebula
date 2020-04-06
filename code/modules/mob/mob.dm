@@ -278,24 +278,6 @@
 /mob/proc/restrained()
 	return
 
-/mob/proc/reset_view(atom/A)
-	if (client)
-		client.pixel_x = initial(client.pixel_x)
-		client.pixel_y = initial(client.pixel_y)
-		A = A ? A : eyeobj
-		if (istype(A, /atom/movable))
-			client.perspective = EYE_PERSPECTIVE
-			client.eye = A
-		else
-			if (isturf(loc))
-				client.eye = client.mob
-				client.perspective = MOB_PERSPECTIVE
-			else
-				client.perspective = EYE_PERSPECTIVE
-				client.eye = loc
-	return
-
-
 /mob/proc/show_inv(mob/user)
 	return
 

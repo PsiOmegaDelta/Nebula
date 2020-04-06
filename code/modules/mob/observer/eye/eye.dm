@@ -61,8 +61,6 @@
 	owner = user
 	owner.eyeobj = src
 	SetName("[owner.name] ([name_sufix])") // Update its name
-	if(owner.client)
-		owner.client.eye = src
 	LAZYDISTINCTADD(owner.additional_vision_handlers, src)
 	apply_visual(owner)
 	if(click_handler_type)
@@ -93,8 +91,6 @@
 
 	forceMove(T)
 
-	if(owner.client)
-		owner.client.eye = src
 	if(owner_follows_eye)
 		owner.forceMove(loc)
 

@@ -57,6 +57,8 @@ var/const/HOLOPAD_MODE = RANGE_BASED
 
 	var/allow_ai = TRUE
 
+	var/datum/client_eye/remote_view
+
 /obj/machinery/hologram/holopad/Initialize()
 	. = ..()
 	desc = "It's a floor-mounted device for projecting holographic images. Its ID is '[loc.loc]'"
@@ -146,8 +148,10 @@ var/const/HOLOPAD_MODE = RANGE_BASED
 
 /obj/machinery/hologram/holopad/proc/take_call(mob/living/carbon/user)
 	incoming_connection = 0
-	caller_id.machine = sourcepad
-	caller_id.reset_view(src)
+
+	remote_view = remote_view || new/datum/client_eye/remote(src)
+	remote_view.Add(user)
+
 	if(!masters[caller_id])//If there is no hologram, possibly make one.
 		activate_holocall(caller_id)
 	log_admin("[key_name(caller_id)] just established a holopad connection from [sourcepad.loc.loc] to [src.loc.loc]")
@@ -155,13 +159,11 @@ var/const/HOLOPAD_MODE = RANGE_BASED
 /obj/machinery/hologram/holopad/proc/end_call(mob/user)
 	if(!caller_id)
 		return
-	caller_id.unset_machine()
-	caller_id.reset_view() //Send the caller back to his body
+	remote_view = remote_view || new/datum/client_eye/remote(src)
+	remote_view.Remove(user)
+
 	clear_holo(0, caller_id) // destroy the hologram
 	caller_id = null
-
-/obj/machinery/hologram/holopad/check_eye(mob/user)
-	return 0
 
 /obj/machinery/hologram/holopad/attack_ai(mob/living/silicon/ai/user)
 	if (!istype(user))

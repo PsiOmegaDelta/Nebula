@@ -5,6 +5,7 @@
 	icon_state = "implant_evil"
 	origin_tech = "{'materials':1,'biotech':2,'esoteric':3}"
 	hidden = 1
+	virtual_mob = /mob/observer/virtual/hear
 	var/elevel
 	var/phrase
 	var/code = 13
@@ -48,7 +49,6 @@
 
 /obj/item/implant/explosive/Initialize()
 	. = ..()
-	GLOB.listening_objects += src
 	set_frequency(frequency)
 
 /obj/item/implant/explosive/Topic(href, href_list)
@@ -161,7 +161,6 @@
 
 /obj/item/implant/explosive/Destroy()
 	removed()
-	GLOB.listening_objects -= src
 	return ..()
 
 /obj/item/implanter/explosive

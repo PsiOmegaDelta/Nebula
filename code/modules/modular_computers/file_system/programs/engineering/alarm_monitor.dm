@@ -93,8 +93,8 @@
 	return all_alarms
 
 /datum/nano_module/alarm_monitor/Topic(ref, href_list)
-	if(..())
-		return 1
+	if((. = ..()))
+		return
 	if(href_list["switchTo"])
 		var/obj/machinery/camera/C = locate(href_list["switchTo"]) in cameranet.cameras
 		if(!C)

@@ -36,6 +36,8 @@
 
 	var/affected_by_emp_until = 0
 
+	virtual_mob = /mob/observer/virtual/see
+
 /obj/machinery/camera/examine(mob/user)
 	. = ..()
 	if(stat & BROKEN)
@@ -276,9 +278,9 @@
 		status = newstatus
 		update_coverage()
 
-/obj/machinery/camera/check_eye(mob/user)
-	if(!can_use()) return -1
-	if(isXRay()) return SEE_TURFS|SEE_MOBS|SEE_OBJS
+/obj/machinery/camera/replacing_visual_flags(mob/user)
+	if(can_use() && isXRay())
+		return SEE_TURFS|SEE_MOBS|SEE_OBJS
 	return 0
 
 /obj/machinery/camera/on_update_icon()

@@ -10,30 +10,43 @@ var/list/all_virtual_listeners = list()
 	virtual_mob = null
 	no_z_overlay = TRUE
 
-	var/atom/movable/host
-	var/host_type = /atom/movable
+	var/atom/host      // A virtual mob can only be owned by one host
+	var/list/observers //  but can have multiple observers connected to it
+
+	var/host_type = /atom
 	var/abilities = VIRTUAL_ABILITY_HEAR|VIRTUAL_ABILITY_SEE
-	var/list/broadcast_methods
 
 	var/static/list/overlay_icons
+
+/mob/observer/virtual/hear
+	abilities = VIRTUAL_ABILITY_HEAR
+
+/mob/observer/virtual/see
+	abilities = VIRTUAL_ABILITY_SEE
 
 /mob/observer/virtual/Initialize(mapload, var/atom/movable/host)
 	. = ..()
 	if(!istype(host, host_type))
-		. = INITIALIZE_HINT_QDEL
-		CRASH("Received an unexpected host type. Expected [host_type], was [log_info_line(host)].")
+		crash_with("Received an unexpected host type. Expected [host_type], was [log_info_line(host)].")
+		return INITIALIZE_HINT_QDEL
 	src.host = host
-	GLOB.moved_event.register(host, src, /atom/movable/proc/move_to_turf_or_null)
+	if(istype(host))
+		GLOB.moved_event.register(host, src, /atom/movable/proc/move_to_turf_or_null)
 
 	all_virtual_listeners += src
 
 	update_icon()
-	STOP_PROCESSING(SSmobs, src)
+
+/mob/observer/virtual/Life()
+	return PROCESS_KILL
 
 /mob/observer/virtual/Destroy()
-	GLOB.moved_event.unregister(host, src, /atom/movable/proc/move_to_turf_or_null)
+	if(ismovable(host))
+		GLOB.moved_event.unregister(host, src, /atom/movable/proc/move_to_turf_or_null)
+
 	all_virtual_listeners -= src
 	host = null
+	observers?.Cut()
 	return ..()
 
 /mob/observer/virtual/on_update_icon()
@@ -51,13 +64,6 @@ var/list/all_virtual_listeners = list()
 /***********************
 * Virtual Mob Creation *
 ***********************/
-/atom/movable
-	var/mob/observer/virtual/virtual_mob
-
-/atom/movable/Initialize()
-	. = ..()
-	if(shall_have_virtual_mob())
-		virtual_mob = new virtual_mob(get_turf(src), src)
-
-/atom/movable/proc/shall_have_virtual_mob()
-	return ispath(initial(virtual_mob))
+/atom
+	var/mob/observer/virtual/virtual_mob // An atom can only own one virtual mob
+	var/list/observed_virtual_mobs       //  but can observe multiple virtual mobs

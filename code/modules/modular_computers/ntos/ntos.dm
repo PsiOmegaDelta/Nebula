@@ -153,11 +153,6 @@
 	update_progress = 0
 	update_postshutdown = shutdown_after
 
-// Used by camera monitor program
-/datum/extension/interactive/ntos/proc/check_eye(var/mob/user)
-	if(active_program)
-		return active_program.check_eye(user)
-
 /datum/extension/interactive/ntos/proc/process_updates()
 	if(update_progress < updates)
 		update_progress += rand(0, 2500)

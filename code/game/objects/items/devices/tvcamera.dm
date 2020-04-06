@@ -5,12 +5,12 @@
 	item_state = "camcorder"
 	w_class = ITEM_SIZE_LARGE
 	slot_flags = SLOT_BELT
+	virtual_mob = /mob/observer/virtual
 	var/channel = "General News Feed"
 	var/obj/machinery/camera/network/thunder/camera
 	var/obj/item/radio/radio
 
 /obj/item/camera/tvcamera/Destroy()
-	GLOB.listening_objects -= src
 	QDEL_NULL(camera)
 	QDEL_NULL(radio)
 	. = ..()
@@ -23,7 +23,6 @@
 	radio.listening = FALSE
 	radio.set_frequency(ENT_FREQ)
 	radio.power_usage = 0
-	GLOB.listening_objects += src
 	. = ..()
 
 /obj/item/camera/tvcamera/examine(mob/user)

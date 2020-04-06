@@ -69,7 +69,6 @@
 		ui.set_initial_data(data)
 		ui.open()
 
-	user.machine = nano_host()
 	if(can_connect_to_camera(current_camera))
 		user.reset_view(current_camera)
 
@@ -131,7 +130,6 @@
 			return 0
 
 		A.eyeobj.setLoc(get_turf(C))
-		A.client.eye = A.eyeobj
 		return 1
 
 	set_current(C)
@@ -156,17 +154,6 @@
 		if(istype(L))
 			L.tracking_cancelled()
 	current_camera = null
-
-/datum/nano_module/program/camera_monitor/check_eye(var/mob/user)
-	if(!current_camera)
-		return 0
-	if(!can_connect_to_camera(current_camera))
-		return 0
-	var/viewflag = current_camera.check_eye(user)
-	if ( viewflag < 0 ) //camera doesn't work
-		reset_current()
-	return viewflag
-
 
 // ERT Variant of the program
 /datum/computer_file/program/camera_monitor/ert

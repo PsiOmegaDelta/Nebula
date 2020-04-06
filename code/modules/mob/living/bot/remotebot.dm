@@ -119,12 +119,9 @@
 	show_browser(user, dat, "window=bot_controller")
 	onclose(user, "botcontroller")
 
-/obj/item/bot_controller/check_eye()
-	return 0
-
 /obj/item/bot_controller/Topic(href, href_list)
 	..()
-	if(!bot)
+	if(. || !bot)
 		return
 
 	if(href_list["drop"])
@@ -138,13 +135,6 @@
 			usr.visible_message("\The [usr] looks intently on \the [src]'s screen.")
 
 	src.interact(usr)
-
-
-/obj/item/bot_controller/dropped(var/mob/living/user)
-	if(user.client.eye == bot)
-		user.client.eye = user
-	return ..()
-
 
 /obj/item/bot_controller/afterattack(atom/A, mob/living/user)
 	if(bot)

@@ -268,9 +268,7 @@
 
 	return 1
 
-/mob/living/silicon/robot/handle_vision()
-	..()
-
+/mob/living/silicon/robot/update_sight()
 	if (src.stat == DEAD || (MUTATION_XRAY in mutations) || (src.sight_mode & BORGXRAY))
 		set_sight(sight|SEE_TURFS|SEE_MOBS|SEE_OBJS)
 		set_see_in_dark(8)

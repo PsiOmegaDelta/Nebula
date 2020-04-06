@@ -1,4 +1,4 @@
-/atom/proc/DefaultTopicState()
+/datum/proc/DefaultTopicState()
 	return GLOB.default_state
 
 /atom/Topic(var/href, var/href_list = list(), var/datum/topic_state/state)

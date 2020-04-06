@@ -462,19 +462,6 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 			message = "<span class='name'>[name]</span> no longer [pick("skulks","lurks","prowls","creeps","stalks")] in the realm of the dead. [message]"
 		communicate(/decl/communication_channel/dsay, C || O, message, /decl/dsay_communication/direct)
 
-/mob/proc/switch_to_camera(var/obj/machinery/camera/C)
-	if (!C.can_use() || stat || (get_dist(C, src) > 1 || machine != src || blinded))
-		return 0
-	check_eye(src)
-	return 1
-
-/mob/living/silicon/ai/switch_to_camera(var/obj/machinery/camera/C)
-	if(!C.can_use() || !is_in_chassis())
-		return 0
-
-	eyeobj.setLoc(C)
-	return 1
-
 // Returns true if the mob has a client which has been active in the last given X minutes.
 /mob/proc/is_client_active(var/active = 1)
 	return client && client.inactivity < active MINUTES
@@ -698,10 +685,16 @@ var/list/intents = list(I_HELP,I_DISARM,I_GRAB,I_HURT)
 	var/asight = 0
 	var/ainvis = 0
 	for(var/atom/vision_handler in additional_vision_handlers)
-		//Grab their flags
 		asight |= vision_handler.additional_sight_flags()
 		ainvis = max(ainvis, vision_handler.additional_see_invisible())
 	result[1] = asight
 	result[2] = ainvis
+	return result
+
+/mob/living/carbon/human/get_accumulated_vision_handlers()
+	var/list/result = ..()
+	result[1] |= equipment_vision_flags
+	if(species)
+		result[1] |= species.get_vision_flags(src)
 
 	return result

@@ -17,6 +17,7 @@
 	name = "statuette"
 	icon_state = "statuette"
 	icon = 'icons/obj/xenoarchaeology.dmi'
+	virtual_mob = /mob/observer/virtual/hear
 	var/charges = 0
 	var/list/nearby_mobs = list()
 	var/last_bloodcall = 0
@@ -29,11 +30,9 @@
 /obj/item/vampiric/Initialize()
 	. = ..()
 	START_PROCESSING(SSobj, src)
-	GLOB.listening_objects += src
 
 /obj/item/vampiric/Destroy()
 	STOP_PROCESSING(SSobj, src)
-	GLOB.listening_objects -= src
 	return ..()
 
 /obj/item/vampiric/Process()

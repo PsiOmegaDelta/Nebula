@@ -163,9 +163,13 @@
 		event_sources -= event_source
 	return TRUE
 
-/decl/observ/proc/register_global(var/datum/listener, var/proc_call)
+/decl/observ/proc/register_global(datum/listener, proc_call)
 	// Sanity.
-	if (!(listener && proc_call))
+	if (!istype(listener))
+		crash_with("Invalid listener: [log_info_line(listener)]")
+		return FALSE
+	if (!proc_call)
+		crash_with("Invalid proc")
 		return FALSE
 
 	// Make sure the callbacks are setup.

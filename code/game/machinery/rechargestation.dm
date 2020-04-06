@@ -182,7 +182,6 @@
 		return
 
 	add_fingerprint(M)
-	M.reset_view(src)
 	M.forceMove(src)
 	occupant = M
 	update_icon()
@@ -206,8 +205,7 @@
 	if(!occupant)
 		return
 
-	occupant.forceMove(loc)
-	occupant.reset_view()
+	occupant.dropInto(loc)
 	occupant = null
 	update_icon()
 

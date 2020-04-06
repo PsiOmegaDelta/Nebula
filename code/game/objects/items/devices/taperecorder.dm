@@ -22,6 +22,7 @@
 	throwforce = 2
 	throw_speed = 4
 	throw_range = 20
+	virtual_mob = /mob/observer/virtual/hear
 
 /obj/item/taperecorder/Initialize()
 	. = ..()
@@ -29,7 +30,6 @@
 	set_extension(src, /datum/extension/base_icon_state, icon_state)
 	if(ispath(mytape))
 		mytape = new mytape(src)
-	GLOB.listening_objects += src
 	update_icon()
 
 /obj/item/taperecorder/empty
@@ -37,10 +37,7 @@
 
 /obj/item/taperecorder/Destroy()
 	QDEL_NULL(wires)
-	GLOB.listening_objects -= src
-	if(mytape)
-		qdel(mytape)
-		mytape = null
+	QDEL_NULL(mytape)
 	return ..()
 
 
@@ -502,7 +499,7 @@
 		var/index = text2num(href_list["cut_after"])
 		if(index >= timestamp.len)
 			return
-		
+
 		to_chat(user, "<span class='notice'>You remove part of the tape off.</span>")
 		get_loose_tape(user, index)
 		cut(user)

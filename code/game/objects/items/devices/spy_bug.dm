@@ -15,7 +15,7 @@
 	throw_speed = 3
 
 	origin_tech = "{'programming':1,'engineering':1,'esoteric':3}"
-
+	virtual_mob = /mob/observer/virtual/hear
 	var/obj/item/radio/spy/radio
 	var/obj/machinery/camera/spy/camera
 
@@ -23,12 +23,10 @@
 	. = ..()
 	radio = new(src)
 	camera = new(src)
-	GLOB.listening_objects += src
 
 /obj/item/spy_bug/Destroy()
 	QDEL_NULL(radio)
 	QDEL_NULL(camera)
-	GLOB.listening_objects -= src
 	return ..()
 
 /obj/item/spy_bug/examine(mob/user, distance)
@@ -62,18 +60,20 @@
 
 	origin_tech = "{'programming':1,'engineering':1,'esoteric':3}"
 
-	var/operating = 0
 	var/obj/item/radio/spy/radio
 	var/obj/machinery/camera/spy/selected_camera
-	var/list/obj/machinery/camera/spy/cameras = new()
+	var/list/obj/machinery/camera/spy/cameras
+	var/datum/client_eye/remote/camera/remote_view
 
 /obj/item/spy_monitor/Initialize()
 	. = ..()
 	radio = new(src)
-	GLOB.listening_objects += src
 
 /obj/item/spy_monitor/Destroy()
-	GLOB.listening_objects -= src
+	QDEL_NULL(radio)
+	for(var/camera in camera)
+		remove_camera(camera)
+	QDEL_NULL(remote_view)
 	return ..()
 
 /obj/item/spy_monitor/examine(mob/user, distance)
@@ -82,9 +82,6 @@
 		to_chat(user, "The time '12:00' is blinking in the corner of the screen and \the [src] looks very cheaply made.")
 
 /obj/item/spy_monitor/attack_self(mob/user)
-	if(operating)
-		return
-
 	radio.attack_self(user)
 	view_cameras(user)
 
@@ -97,50 +94,63 @@
 /obj/item/spy_monitor/proc/pair(var/obj/item/spy_bug/SB, var/mob/living/user)
 	if(SB.camera in cameras)
 		to_chat(user, "<span class='notice'>\The [SB] has been unpaired from \the [src].</span>")
-		cameras -= SB.camera
+		remove_camera(SB.camera)
 	else
 		to_chat(user, "<span class='notice'>\The [SB] has been paired with \the [src].</span>")
-		cameras += SB.camera
+		LAZYADD(cameras, SB.camera)
+		GLOB.destroyed_event.register(SB.camera, src, .proc/remove_camera)
+
+/obj/item/spy_monitor/proc/remove_camera(camera)
+	LAZYREMOVE(cameras, camera)
+	GLOB.destroyed_event.unregister(camera, src, .proc/remove_camera)
+	if(selected_camera == camera)
+		selected_camera = get_working_camera()
+		if(selected_camera)
+			remote_view.ChangeTarget(selected_camera)
+		else
+			QDEL_NULL(remote_view)
+
+/obj/item/spy_monitor/proc/get_working_camera()
+	for(var/camera in cameras)
+		var/obj/machinery/camera/C = camera
+		if(C.can_use())
+			return C
 
 /obj/item/spy_monitor/proc/view_cameras(mob/user)
 	if(!can_use_cam(user))
 		return
 
-	selected_camera = cameras[1]
-	view_camera(user)
-
-	operating = 1
-	while(selected_camera && Adjacent(user))
-		selected_camera = input("Select camera bug to view.") as null|anything in cameras
-	selected_camera = null
-	operating = 0
-
-/obj/item/spy_monitor/proc/view_camera(mob/user)
-	spawn(0)
-		while(selected_camera && Adjacent(user))
-			var/turf/T = get_turf(selected_camera)
-			if(!T || !is_on_same_plane_or_station(T.z, user.z) || !selected_camera.can_use())
-				user.unset_machine()
-				user.reset_view(null)
-				to_chat(user, "<span class='notice'>[selected_camera] unavailable.</span>")
-				sleep(90)
+	selected_camera = get_working_camera()
+	remote_view = remote_view || new(src, selected_camera)
+	remote_view.Add(user)
+	do
+		remote_view.ChangeTarget(selected_camera)
+		var/obj/machinery/camera/camera_choice = input("Select camera bug to view.", "Select camera", selected_camera) as null|anything in cameras
+		if(camera_choice)
+			if(!QDELETED(camera_choice) && camera_choice.can_use())
+				selected_camera = camera_choice
 			else
-				user.set_machine(selected_camera)
-				user.reset_view(selected_camera)
-			sleep(10)
-		user.unset_machine()
-		user.reset_view(null)
+				to_chat(user, SPAN_WARNING("The selected camera isn't currently operational"))
+		else
+			selected_camera = null
+	while(selected_camera && remote_view.IsAdded(user))
+	QDEL_NULL(remote_view)
 
 /obj/item/spy_monitor/proc/can_use_cam(mob/user)
-	if(operating)
-		return
+	if(remote_view && remote_view.HasUsers())
+		to_chat(user, SPAN_WARNING("\The [src] is already in use!"))
+		return FALSE
 
-	if(!cameras.len)
-		to_chat(user, "<span class='warning'>No paired cameras detected!</span>")
-		to_chat(user, "<span class='warning'>Bring a bug in contact with this device to pair the camera.</span>")
-		return
+	if(!LAZYLEN(cameras))
+		to_chat(user, SPAN_WARNING("No paired cameras detected!"))
+		to_chat(user, SPAN_WARNING("Bring a bug in contact with this device to pair the camera."))
+		return FALSE
 
-	return 1
+	if(!get_working_camera())
+		to_chat(user, SPAN_WARNING("None of the connected cameras are currently operational!"))
+		return FALSE
+
+	return TRUE
 
 /obj/item/spy_monitor/hear_talk(mob/M, var/msg, verb, decl/language/speaking)
 	return radio.hear_talk(M, msg, speaking)
@@ -154,9 +164,6 @@
 	. = ..()
 	name = "DV-136ZB #[random_id(/obj/machinery/camera/spy, 1000,9999)]"
 	c_tag = name
-
-/obj/machinery/camera/spy/check_eye(var/mob/user)
-	return 0
 
 /obj/item/radio/spy
 	listening = 0

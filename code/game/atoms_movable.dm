@@ -131,10 +131,6 @@
 	if (bound_overlay)
 		QDEL_NULL(bound_overlay)
 
-	if(virtual_mob && !ispath(virtual_mob))
-		qdel(virtual_mob)
-		virtual_mob = null
-
 /atom/movable/Bump(var/atom/A, yes)
 	if(!QDELETED(throwing))
 		throwing.hit_atom(A)

@@ -379,12 +379,6 @@ var/list/ai_verbs_default = list(
 	spawn(300)
 		emergency_message_cooldown = 0
 
-
-/mob/living/silicon/ai/check_eye(var/mob/user)
-	if (!camera)
-		return -1
-	return 0
-
 /mob/living/silicon/ai/restrained()
 	return 0
 
@@ -428,17 +422,6 @@ var/list/ai_verbs_default = list(
 		return TOPIC_HANDLED
 
 	return ..()
-
-/mob/living/silicon/ai/reset_view(atom/A)
-	if(camera)
-		camera.set_light(0)
-	if(istype(A,/obj/machinery/camera))
-		camera = A
-	..()
-	if(istype(A,/obj/machinery/camera))
-		if(camera_light_on)	A.set_light(0.5, 0.1, AI_CAMERA_LUMINOSITY)
-		else				A.set_light(0)
-
 
 /mob/living/silicon/ai/proc/switchCamera(var/obj/machinery/camera/C)
 	if (!C || stat == DEAD) //C.can_use())

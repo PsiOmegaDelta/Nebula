@@ -1086,35 +1086,9 @@
 	adjust_stamina(100)
 	UpdateAppearance()
 
-/mob/living/carbon/human/reset_view(atom/A)
-	..()
-	if(machine_visual && machine_visual != A)
-		machine_visual.remove_visual(src)
-	if(eyeobj)
-		eyeobj.remove_visual(src)
-
 /mob/living/carbon/human/handle_vision()
 	if(client)
 		client.screen.Remove(GLOB.global_hud.nvg, GLOB.global_hud.thermal, GLOB.global_hud.meson, GLOB.global_hud.science)
-	if(machine)
-		var/viewflags = machine.check_eye(src)
-		if(viewflags < 0)
-			reset_view(null, 0)
-		else if(viewflags)
-			set_sight(sight|viewflags)
-	else if(eyeobj)
-		if(eyeobj.owner != src)
-			reset_view(null)
-	else
-		var/isRemoteObserve = 0
-		if(z_eye)
-			isRemoteObserve = 1
-		else if((mRemote in mutations) && remoteview_target)
-			if(remoteview_target.stat == CONSCIOUS)
-				isRemoteObserve = 1
-		if(!isRemoteObserve && client && !client.adminobs)
-			remoteview_target = null
-			reset_view(null, 0)
 
 	update_equipment_vision()
 	species.handle_vision(src)

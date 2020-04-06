@@ -7,6 +7,7 @@ somewhere on that shuttle. Subtypes of these can be then used to perform ship ov
 	var/obj/effect/overmap/visitable/ship/linked
 	var/list/viewers // Weakrefs to mobs in direct-view mode.
 	var/extra_view = 0 // how much the view is increased by when the mob is in overmap mode.
+	var/datum/client_eye/remote_view
 
 // A late init operation called in SSshuttle, used to attach the thing to the right ship.
 /obj/machinery/computer/ship/proc/attempt_hook_up(obj/effect/overmap/visitable/ship/sector)
@@ -45,8 +46,8 @@ somewhere on that shuttle. Subtypes of these can be then used to perform ship ov
 	return TRUE
 
 /obj/machinery/computer/ship/OnTopic(var/mob/user, var/list/href_list)
-	if(..())
-		return TOPIC_HANDLED
+	if((. =  ..()))
+		return
 	if(href_list["sync"])
 		sync_linked()
 		return TOPIC_REFRESH
@@ -62,7 +63,8 @@ somewhere on that shuttle. Subtypes of these can be then used to perform ship ov
 
 /obj/machinery/computer/ship/proc/look(var/mob/user)
 	if(linked)
-		user.reset_view(linked)
+		remote_view = remote_view || new/datum/client_eye/remote(src, linked)
+		remote_view.Add(user)
 	if(user.client)
 		user.client.view = world.view + extra_view
 	if(linked)
@@ -74,7 +76,8 @@ somewhere on that shuttle. Subtypes of these can be then used to perform ship ov
 	LAZYDISTINCTADD(viewers, weakref(user))
 
 /obj/machinery/computer/ship/proc/unlook(var/mob/user)
-	user.reset_view()
+	if(remote_view)
+		remote_view.Remove(user)
 	if(user.client)
 		user.client.view = world.view
 		user.client.OnResize()
@@ -97,13 +100,6 @@ somewhere on that shuttle. Subtypes of these can be then used to perform ship ov
 	. = ..()
 	if(viewing_overmap(user))
 		look(user)
-
-/obj/machinery/computer/ship/check_eye(var/mob/user)
-	if (!get_dist(user, src) > 1 || user.blinded || !linked )
-		unlook(user)
-		return -1
-	else
-		return 0
 
 /obj/machinery/computer/ship/Destroy()
 	linked.consoles -= src

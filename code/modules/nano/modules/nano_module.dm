@@ -21,9 +21,6 @@
 /datum/nano_module/proc/can_still_topic(var/datum/topic_state/state = GLOB.default_state)
 	return CanUseTopic(usr, state) == STATUS_INTERACTIVE
 
-/datum/nano_module/proc/check_eye(var/mob/user)
-	return -1
-
 //returns a list.
 /datum/nano_module/proc/get_access(mob/user)
 	. = using_access

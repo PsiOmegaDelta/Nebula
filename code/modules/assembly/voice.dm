@@ -8,15 +8,14 @@
 		/decl/material/solid/glass = MATTER_AMOUNT_REINFORCEMENT,
 		/decl/material/solid/slag = MATTER_AMOUNT_TRACE
 	)
+	virtual_mob = /mob/observer/virtual/hear
 	var/listening = 0
 	var/recorded	//the activation message
 
 /obj/item/assembly/voice/Initialize()
 	. = ..()
-	GLOB.listening_objects += src
 
 /obj/item/assembly/voice/Destroy()
-	GLOB.listening_objects -= src
 	return ..()
 
 /obj/item/assembly/voice/hear_talk(mob/living/M, msg)

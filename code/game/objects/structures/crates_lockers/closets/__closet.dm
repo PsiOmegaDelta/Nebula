@@ -94,7 +94,7 @@
 		stored_units += store_mobs(stored_units)
 	if(storage_types & CLOSET_STORAGE_STRUCTURES)
 		stored_units += store_structures(stored_units)
-		
+
 /obj/structure/closet/proc/open()
 	if(src.opened)
 		return 0
@@ -158,9 +158,6 @@
 		if(CLOSET_CHECK_TOO_BIG(mob_size))
 			break
 		. += mob_size
-		if(M.client)
-			M.client.perspective = EYE_PERSPECTIVE
-			M.client.eye = src
 		M.forceMove(src)
 
 /obj/structure/closet/proc/store_structures(var/stored_units)
@@ -226,7 +223,7 @@
 		take_damage(proj_damage)
 
 /obj/structure/closet/attackby(obj/item/W, mob/user)
-	
+
 	if(user.a_intent == I_HURT && W.force)
 		return ..()
 

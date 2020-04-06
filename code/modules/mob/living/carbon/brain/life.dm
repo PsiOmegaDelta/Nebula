@@ -185,11 +185,5 @@
 			set_fullscreen(disabilities & NEARSIGHTED, "impaired", /obj/screen/fullscreen/impaired, 1)
 			set_fullscreen(eye_blurry, "blurry", /obj/screen/fullscreen/blurry)
 			set_fullscreen(drugged, "high", /obj/screen/fullscreen/high)
-		if (machine)
-			if (!( machine.check_eye(src) ))
-				reset_view(null)
-		else
-			if(client && !client.adminobs)
-				reset_view(null)
 
 	return 1

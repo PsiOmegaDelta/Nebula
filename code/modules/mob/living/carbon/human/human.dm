@@ -1427,12 +1427,6 @@
 		)
 		current_limb.undislocate()
 
-/mob/living/carbon/human/reset_view(atom/A, update_hud = 1)
-	..()
-	if(update_hud)
-		handle_regular_hud_updates()
-
-
 /mob/living/carbon/human/can_stand_overridden()
 	if(wearing_rig && wearing_rig.ai_can_move_suit(check_for_ai = 1))
 		// Actually missing a leg will screw you up. Everything else can be compensated for.

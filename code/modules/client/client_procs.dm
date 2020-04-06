@@ -457,16 +457,6 @@ client/verb/character_setup()
 	if(last_view_y_dim % 2 == 0) last_view_y_dim++
 	view = "[last_view_x_dim]x[last_view_y_dim]"
 
-	// Reset eye/perspective
-	var/last_perspective = perspective
-	perspective = MOB_PERSPECTIVE
-	if(perspective != last_perspective)
-		perspective = last_perspective
-	var/last_eye = eye
-	eye = mob
-	if(eye != last_eye)
-		eye = last_eye
-
 	// Recenter skybox and lighting.
 	set_skybox_offsets(last_view_x_dim, last_view_y_dim)
 	if(mob)

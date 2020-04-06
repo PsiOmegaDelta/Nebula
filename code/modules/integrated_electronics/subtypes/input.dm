@@ -867,13 +867,12 @@
 	activators = list("on message received" = IC_PINTYPE_PULSE_OUT, "on translation" = IC_PINTYPE_PULSE_OUT)
 	spawn_flags = IC_SPAWN_DEFAULT|IC_SPAWN_RESEARCH
 	power_draw_per_use = 5
+	virtual_mob = /mob/observer/virtual/hear
 
 /obj/item/integrated_circuit/input/microphone/Initialize()
 	. = ..()
-	GLOB.listening_objects += src
 
 /obj/item/integrated_circuit/input/microphone/Destroy()
-	GLOB.listening_objects -= src
 	. = ..()
 
 /obj/item/integrated_circuit/input/microphone/hear_talk(var/mob/living/M, text, verb, decl/language/speaking)

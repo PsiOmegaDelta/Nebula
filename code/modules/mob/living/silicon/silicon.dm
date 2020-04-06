@@ -354,11 +354,6 @@
 /mob/living/silicon/setEarDamage()
 	return
 
-/mob/living/silicon/reset_view()
-	..()
-	if(cameraFollow)
-		cameraFollow = null
-
 /mob/living/silicon/proc/clear_client()
 	//Handle job slot/tater cleanup.
 	if(mind)

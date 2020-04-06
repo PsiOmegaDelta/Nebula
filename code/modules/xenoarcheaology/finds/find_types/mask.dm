@@ -12,18 +12,17 @@
 /obj/item/clothing/mask/gas/poltergeist
 	icon = 'icons/obj/xenoarchaeology.dmi'
 	icon_state = "gasmask"
+	virtual_mob = /mob/observer/virtual/hear
 	var/list/heard_talk = list()
 	var/last_twitch = 0
 	var/max_stored_messages = 100
 
 /obj/item/clothing/mask/gas/poltergeist/Initialize()
 	START_PROCESSING(SSobj, src)
-	GLOB.listening_objects += src
 	. = ..()
 
 /obj/item/clothing/mask/gas/poltergeist/Destroy()
 	STOP_PROCESSING(SSobj, src)
-	GLOB.listening_objects -= src
 	return ..()
 
 /obj/item/clothing/mask/gas/poltergeist/Process()

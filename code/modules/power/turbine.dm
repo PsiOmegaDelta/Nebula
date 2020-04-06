@@ -246,7 +246,7 @@
 
 /obj/machinery/computer/turbine_computer/OnTopic(user, href_list)
 	if( href_list["view"] )
-		usr.client.eye = src.compressor
+		// TODO:CE
 		. = TOPIC_HANDLED
 	else if( href_list["str"] )
 		src.compressor.starter = !src.compressor.starter

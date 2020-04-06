@@ -126,6 +126,8 @@
 
 #define CanPhysicallyInteractWith(user, target) (target.CanUseTopicPhysical(user) == STATUS_INTERACTIVE)
 
+#define GET_OR_INIT(X, Y) (X || (X = new Y()))
+
 #define QDEL_NULL_LIST(x) if(x) { for(var/y in x) { qdel(y) }}; if(x) {x.Cut(); x = null } // Second x check to handle items that LAZYREMOVE on qdel.
 
 #define QDEL_NULL(x) if(x) { qdel(x) ; x = null }
@@ -134,7 +136,7 @@
 
 #define DROP_NULL(x) if(x) { x.dropInto(loc); x = null; }
 
-#define ARGS_DEBUG log_debug("[__FILE__] - [__LINE__]") ; for(var/arg in args) { log_debug("\t[log_info_line(arg)]") }
+#define ARGS_DEBUG to_world_log("[__FILE__] - [__LINE__]") ; for(var/arg in args) { to_world_log("\t[log_info_line(arg)]") }
 
 // Insert an object A into a sorted list using cmp_proc (/code/_helpers/cmp.dm) for comparison.
 #define ADD_SORTED(list, A, cmp_proc) if(!list.len) {list.Add(A)} else {list.Insert(FindElementIndex(A, list, cmp_proc), A)}

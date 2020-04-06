@@ -171,13 +171,6 @@
 	if(computer)
 		return computer.Topic(href, href_list)
 
-// Relays the call to nano module, if we have one
-/datum/computer_file/program/proc/check_eye(var/mob/user)
-	if(NM)
-		return NM.check_eye(user)
-	else
-		return -1
-
 /datum/nano_module/program
 	available_to_ai = FALSE
 	var/datum/computer_file/program/program = null	// Program-Based computer program that runs this nano module. Defaults to null.

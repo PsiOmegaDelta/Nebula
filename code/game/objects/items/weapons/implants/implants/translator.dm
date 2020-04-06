@@ -5,16 +5,13 @@
 	icon_state = "implant_evil"
 	origin_tech = "{'materials':1,'biotech':2,'esoteric':3}"
 	hidden = 1
+	virtual_mob = /mob/observer/virtual/hear
 	var/list/languages = list()
 	var/learning_threshold = 20 //need to hear language spoken this many times to learn it
 	var/max_languages = 5
 
 /obj/item/implant/translator/get_data()
 	return "WARNING: No match found in the database."
-
-/obj/item/implant/translator/Initialize()
-	. = ..()
-	GLOB.listening_objects += src
 
 /obj/item/implant/translator/hear_talk(mob/M, msg, verb, decl/language/speaking)
 	if(!imp_in)
@@ -33,7 +30,6 @@
 
 /obj/item/implant/translator/Destroy()
 	removed()
-	GLOB.listening_objects -= src
 	return ..()
 
 /obj/item/implanter/translator

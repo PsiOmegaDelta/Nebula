@@ -5,17 +5,13 @@
 	name = "OBSERVATION template"
 	template = /datum/unit_test/observation
 	async = 0
-	var/list/received_moves
+	var/list/received_moves = list()
 
 	var/list/stored_global_listen_count
 	var/list/stored_event_sources_count
 	var/list/stored_event_listen_count
 
 /datum/unit_test/observation/start_test()
-	if(!received_moves)
-		received_moves = list()
-	received_moves.Cut()
-
 	for(var/global_listener in GLOB.moved_event.global_listeners)
 		GLOB.moved_event.unregister_global(global_listener)
 
@@ -64,6 +60,11 @@
 
 /datum/unit_test/observation/proc/receive_move(var/atom/movable/am, var/old_loc, var/new_loc)
 	received_moves[++received_moves.len] =  list(am, old_loc, new_loc)
+
+/datum/unit_test/observation/proc/LogBadMoveEvent(list/event)
+	log_bad("Source: [log_info_line(event[1])]")
+	log_bad("Old Loc: [log_info_line(event[2])]")
+	log_bad("New Loc: [log_info_line(event[3])]")
 
 /datum/unit_test/observation/proc/dump_received_moves()
 	for(var/entry in received_moves)
@@ -457,3 +458,119 @@
 
 /datum/unit_test/observation/opacity_simple/unsetting_opacity_of_opaque_turf_shall_only_trigger_once/ChangeOpacity(turf/T)
 	T.set_opacity(FALSE)
+
+
+/datum/unit_test/observation/move
+	template = /datum/unit_test/observation/move
+	var/list/actual_events = list()
+
+/datum/unit_test/observation/move/New()
+	name = "Observation: Moved - " + name
+
+// Expected order matters
+/datum/unit_test/observation/move/proc/ExpectedEvents(obj/event_source)
+	return list()
+
+/datum/unit_test/observation/move/proc/GetOrigin()
+	return null
+
+/datum/unit_test/observation/move/proc/Move(obj/event_source)
+	return
+
+/datum/unit_test/observation/move/conduct_test()
+	var/turf/T = GetOrigin()
+	var/obj/event_source = get_named_instance(/obj, T, "Event Source")
+	GLOB.moved_event.register(event_source, src, .proc/receive_move)
+
+	Move(event_source)
+
+	GLOB.moved_event.unregister(event_source, src, .proc/receive_move)
+	qdel(event_source)
+
+	var/list/expected_events = ExpectedEvents(event_source)
+	var/failed = FALSE
+	if(length(expected_events) == length(received_moves))
+		for(var/i = 1 to length(expected_events))
+			var/expected_event = expected_events[i]
+			var/actual_event = received_moves[i]
+			if(expected_event[1] != actual_event[1] || expected_event[2] != actual_event[2] || expected_event[3] != actual_event[3])
+				failed = TRUE
+				break
+	else
+		failed = TRUE
+
+	if(failed)
+		log_bad("Expected the following events:")
+		for(var/event in expected_events)
+			LogBadMoveEvent(event)
+		log_bad("Was:")
+		for(var/event in received_moves)
+			LogBadMoveEvent(event)
+		fail("Not all event expectations were met")
+	else
+		pass("All event expections were met")
+
+	return 1
+
+/datum/unit_test/observation/move/forced
+	template = /datum/unit_test/observation/move/forced
+
+/datum/unit_test/observation/move/forced/ExpectedEvents(obj/event_source)
+	return list(list(event_source, GetOrigin(), GetDestination()))
+
+/datum/unit_test/observation/move/forced/proc/GetDestination()
+	return null
+
+/datum/unit_test/observation/move/forced/Move(obj/event_source)
+	event_source.forceMove(GetDestination())
+
+
+/datum/unit_test/observation/move/forced/atom_to_atom
+	name = "Force move from atom to atom shall raise event"
+
+/datum/unit_test/observation/move/forced/atom_to_atom/GetOrigin()
+	return get_safe_turf()
+
+/datum/unit_test/observation/move/forced/atom_to_atom/GetDestination()
+	return get_space_turf()
+
+
+/datum/unit_test/observation/move/forced/atom_to_null
+	name = "Force move from atom to null shall raise event"
+
+/datum/unit_test/observation/move/forced/atom_to_null/GetOrigin()
+	return get_safe_turf()
+
+
+/datum/unit_test/observation/move/forced/null_to_atom
+	name = "Force move from null to atom shall raise event"
+
+/datum/unit_test/observation/move/forced/null_to_atom/GetDestination()
+	return get_space_turf()
+
+
+/datum/unit_test/observation/move/forced/null_to_null
+	name = "Force move from null to null shall not raise event"
+
+/datum/unit_test/observation/move/forced/null_to_null/ExpectedEvents()
+	return list()
+
+
+/datum/unit_test/observation/move/forced/from_and_to_null
+	name = "Force move from and to null shall not raise event"
+
+/datum/unit_test/observation/move/forced/from_and_to_null/ExpectedEvents()
+	return list()
+
+
+/datum/unit_test/observation/move/forced/from_and_to_same_atom
+	name = "Force move from and to same atom shall not raise event"
+
+/datum/unit_test/observation/move/forced/from_and_to_same_atom/ExpectedEvents()
+	return list()
+
+/datum/unit_test/observation/move/forced/from_and_to_same_atom/GetOrigin()
+	return get_safe_turf()
+
+/datum/unit_test/observation/move/forced/from_and_to_same_atom/GetDestination()
+	return get_safe_turf()

@@ -28,6 +28,7 @@
 	matter = list(/decl/material/solid/metal/aluminium = MATTER_AMOUNT_REINFORCEMENT)
 	var/const/FREQ_LISTENING = 1
 	var/list/internal_channels
+	virtual_mob = /mob/observer/virtual/hear
 
 	var/obj/item/cell/cell = /obj/item/cell/device
 	var/power_usage = 2800
@@ -48,7 +49,7 @@
 	if(ispath(cell))
 		cell = new(src)
 	internal_channels = GLOB.using_map.default_internal_channels()
-	GLOB.listening_objects += src
+	GLOB.listening_radios += src
 
 	if(frequency < RADIO_LOW_FREQ || frequency > RADIO_HIGH_FREQ)
 		frequency = sanitize_frequency(frequency, RADIO_LOW_FREQ, RADIO_HIGH_FREQ)
@@ -59,7 +60,7 @@
 
 /obj/item/radio/Destroy()
 	QDEL_NULL(wires)
-	GLOB.listening_objects -= src
+	GLOB.listening_radios -= src
 	if(radio_controller)
 		radio_controller.remove_object(src, frequency)
 		for (var/ch_name in channels)

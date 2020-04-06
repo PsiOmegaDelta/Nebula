@@ -3,7 +3,7 @@ GLOBAL_LIST_EMPTY(sec_hud_users)          // List of all entities using a securi
 GLOBAL_LIST_EMPTY(jani_hud_users)
 GLOBAL_LIST_EMPTY(hud_icon_reference)
 
-GLOBAL_LIST_EMPTY(listening_objects) // List of objects that need to be able to hear, used to avoid recursive searching through contents.
+GLOBAL_LIST_EMPTY(listening_radios) // List of radios that need to be able to hear, used to avoid recursive searching through contents.
 
 GLOBAL_LIST_EMPTY(global_mutations) // List of hidden mutation things.
 

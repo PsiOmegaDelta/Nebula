@@ -9,6 +9,7 @@
 	w_class = ITEM_SIZE_SMALL
 	throw_speed = 3
 	throw_range = 10
+	virtual_mob = /mob/observer/virtual/hear
 
 	var/secured = 0
 	var/obj/item/assembly/a_left = null
@@ -185,10 +186,8 @@
 
 /obj/item/assembly_holder/Initialize()
 	. = ..()
-	GLOB.listening_objects += src
 
 /obj/item/assembly_holder/Destroy()
-	GLOB.listening_objects -= src
 	return ..()
 
 
