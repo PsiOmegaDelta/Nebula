@@ -284,16 +284,7 @@
 	client.default_pixel_y = initial(client.default_pixel_y)
 	client.pixel_x = client.default_pixel_x
 	client.pixel_y = client.default_pixel_y
-	A = A ? A : eyeobj
-	if (istype(A, /atom/movable))
-		client.perspective = EYE_PERSPECTIVE
-		client.eye = A
-	else if (isturf(loc))
-		client.eye = client.mob
-		client.perspective = MOB_PERSPECTIVE
-	else
-		client.perspective = EYE_PERSPECTIVE
-		client.eye = loc
+	// TODO-CLIENTEYE
 
 /mob/proc/show_inv(mob/user)
 	return

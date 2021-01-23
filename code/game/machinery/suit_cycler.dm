@@ -140,9 +140,6 @@
 	if(do_after(user, 20, src))
 		if(!istype(target) || locked || suit || helmet || !target.Adjacent(user) || !user.Adjacent(src) || user.incapacitated())
 			return FALSE
-		if (target.client)
-			target.client.perspective = EYE_PERSPECTIVE
-			target.client.eye = src
 		target.forceMove(src)
 		occupant = target
 		add_fingerprint(user)

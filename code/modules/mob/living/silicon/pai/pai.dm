@@ -198,9 +198,6 @@ GLOBAL_LIST_INIT(possible_say_verbs, list(
 					break
 		holder.drop_from_inventory(card)
 
-	if(client)
-		client.perspective = EYE_PERSPECTIVE
-		client.eye = src
 	dropInto(card.loc)
 	card.forceMove(src)
 	card.screen_loc = null
@@ -238,9 +235,6 @@ GLOBAL_LIST_INIT(possible_say_verbs, list(
 	card.dropInto(card.loc)
 	forceMove(card)
 
-	if (src && client)
-		client.perspective = EYE_PERSPECTIVE
-		client.eye = card
 	set_icon_state("[chassis]")
 	is_in_card = TRUE
 	var/turf/T = get_turf(src)

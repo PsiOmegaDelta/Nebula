@@ -113,7 +113,7 @@
 		if(ismob(AM))
 			var/mob/M = AM
 			if(M.client)	// if a client mob, update eye to follow this holder
-				M.client.eye = src
+				// TODO-CLIENTEYE
 	qdel(other)
 
 /obj/structure/disposalholder/proc/settag(var/new_tag)

@@ -531,10 +531,6 @@
 	if(!occupant)
 		return
 
-	if(occupant.client)
-		occupant.client.eye = src.occupant.client.mob
-		occupant.client.perspective = MOB_PERSPECTIVE
-
 	occupant.dropInto(loc)
 	set_occupant(null)
 
@@ -552,8 +548,6 @@
 		if(!silent)
 			to_chat(occupant, "<span class='notice'>[on_enter_occupant_message]</span>")
 			to_chat(occupant, "<span class='notice'><b>If you ghost, log out or close your client now, your character will shortly be permanently removed from the round.</b></span>")
-		occupant.client.perspective = EYE_PERSPECTIVE
-		occupant.client.eye = src
 	occupant.forceMove(src)
 	time_entered = world.time
 

@@ -177,6 +177,6 @@ var/list/ventcrawl_machinery = list(
 	if(client)
 		for(var/image/current_image in pipes_shown)
 			client.images -= current_image
-		client.eye = src
+		// TODO-CLIENTEYE?
 
 	pipes_shown.len = 0

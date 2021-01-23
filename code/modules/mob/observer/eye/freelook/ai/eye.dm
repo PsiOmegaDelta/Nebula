@@ -58,7 +58,7 @@
 	qdel(eyeobj) // No AI, no Eye
 	eyeobj = null
 	if(client)
-		client.eye = new_eye
+		client.eye = new_eye // TODO-CLIENTEYE
 
 /mob/living/silicon/ai/proc/create_eyeobj(var/newloc)
 	if(eyeobj) destroy_eyeobj()
@@ -78,7 +78,7 @@
 /atom/proc/move_camera_by_click()
 	if(istype(usr, /mob/living/silicon/ai))
 		var/mob/living/silicon/ai/AI = usr
-		if(AI.eyeobj && AI.client.eye == AI.eyeobj)
+		if(AI.eyeobj && AI.client.eye == AI.eyeobj) // TODO-CLIENTEYE
 			AI.eyeobj.setLoc(src)
 
 // Return to the Core.

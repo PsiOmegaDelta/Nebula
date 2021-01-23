@@ -69,6 +69,10 @@
 /atom/Destroy()
 	global.is_currently_exploding -= src
 	QDEL_NULL(reagents)
+
+	if(!ispath(virtual_mob))
+		QDEL_NULL(virtual_mob)
+		observed_virtual_mobs?.Cut()
 	. = ..()
 
 /atom/proc/reveal_blood()
@@ -294,11 +298,6 @@ its easier to just keep the beam vertical.
 	for(var/thing in get_contained_external_atoms())
 		var/atom/movable/AM = thing
 		AM.dropInto(loc)
-		if(ismob(AM))
-			var/mob/M = AM
-			if(M.client)
-				M.client.eye = M.client.mob
-				M.client.perspective = MOB_PERSPECTIVE
 
 /atom/proc/physically_destroyed(var/skip_qdel)
 	SHOULD_CALL_PARENT(TRUE)

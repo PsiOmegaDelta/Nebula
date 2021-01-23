@@ -51,7 +51,7 @@
 					if(T)
 						if(target.forceMove(T))
 							break
-			target.client.eye = target
+			// TODO-CLIENTEYE?
 			qdel(animation)
 			qdel(holder)
 

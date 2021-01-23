@@ -131,7 +131,7 @@
 			return 0
 
 		A.eyeobj.setLoc(get_turf(C))
-		A.client.eye = A.eyeobj
+		// TODO-CLIENTEYE
 		return 1
 
 	set_current(C)

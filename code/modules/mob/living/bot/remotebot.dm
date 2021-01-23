@@ -112,7 +112,7 @@
 		return
 	var/dat = "<center><TT><b>Remote Control: [bot.name]</b></TT><br>"
 	dat += "Currently Holding: [bot.holding ? bot.holding.name : "Nothing"]<br><br>"
-	var/is_looking = (user.client.eye == bot)
+	var/is_looking = (user.client.eye == bot) // TODO-CLIENTEYE
 	dat += "<a href='byond://?src=\ref[src];look=[is_looking];'>[is_looking ? "Stop" : "Start"] Looking</a><br>"
 	dat += "<a href='byond://?src=\ref[src];drop=1;'>Drop Item</a><br></center>"
 
@@ -142,7 +142,7 @@
 
 /obj/item/bot_controller/dropped(var/mob/living/user)
 	if(user.client.eye == bot)
-		user.client.eye = user
+		user.client.eye = user // TODO-CLIENTEYE
 	return ..()
 
 

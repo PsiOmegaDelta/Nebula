@@ -32,9 +32,12 @@
 */
 /decl/communication_channel/proc/communicate(var/datum/communicator, var/message)
 	if(can_communicate(arglist(args)))
-		call(log_proc)("[(flags&COMMUNICATION_LOG_CHANNEL_NAME) ? "([name]) " : ""][communicator.communication_identifier()] : [message]")
+		call(log_proc)(log_message(arglist(args)))
 		return do_communicate(arglist(args))
 	return FALSE
+
+/decl/communication_channel/proc/log_message(var/datum/communicator, var/message)
+	return "[(flags & COMMUNICATION_LOG_CHANNEL_NAME) ? "([name]) " : ""][communicator.communication_identifier()]: [message]"
 
 /decl/communication_channel/proc/can_communicate(var/datum/communicator, var/message)
 
@@ -50,6 +53,8 @@
 		return FALSE
 
 	var/client/C = communicator.get_client()
+	if(!C)
+		return TRUE
 
 	if(jobban_isbanned(C.mob, name))
 		to_chat(communicator, "<span class='danger'>You cannot use [name] (banned).</span>")
